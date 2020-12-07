@@ -1,3 +1,4 @@
+import time
 import os
 import re
 from openpyxl import Workbook
@@ -6,7 +7,7 @@ from tkinter import Tk, Entry, Button, Label, messagebox
 
 def count_occurrences_of_string(search_string, input_file_path):
     _in_str = "value\s+\({}\)".format(search_string)
-    with open("Search_MMS-UE-S1AP-DI.log", "a") as log_ob:
+    with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
         print(_in_str, file=log_ob)
     _in_str_pat = re.compile(_in_str)
     add_enodebe_id = "ENODEB ID:"
@@ -42,7 +43,7 @@ def count_occurrence_in_dir(search_string, input_dir_path):
     filename_v_uplink = {}
     for cur_dir, dirs, files in os.walk(input_dir_path):
         for input_file in files:
-            with open("Search_MMS-UE-S1AP-DI.log", "a") as log_ob:
+            with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
                 print("Reading file = {}".format(input_file), file=log_ob)
             input_file_path = os.path.join(cur_dir, input_file)
             _uplink_id_v_data = count_occurrences_of_string(search_string, input_file_path)
@@ -50,14 +51,15 @@ def count_occurrence_in_dir(search_string, input_dir_path):
             if _uplink_id_v_data is not None:
                 filename_v_uplink[input_file] = _uplink_id_v_data
             else:
-                with open("Search_MMS-UE-S1AP-DI.log", "a") as log_ob:
+                with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
                     print("\t No match for {} found in this file".format(search_string), file=log_ob)
     else:
         return filename_v_uplink
 
 
 def write_to_excel(file_v_uplink_and_related_data):
-    ouput_file_path = "output.xlsx"
+    time_part = time.strftime("%d-%b-%Y-%H%M%S", time.gmtime())
+    ouput_file_path = "output_{}.xlsx".format(time_part)
     WB = Workbook()
     sheet_ob = WB.create_sheet()
     headers = ["File_name", "UPLINK_ID", "ENODB_ID", "DATE-TIME", "TIMESTAMP", "EVENT_NAME"]
@@ -122,8 +124,9 @@ if __name__ == "__main__":
     # print("Searching for " + search_string)
 
     search_string, input_directory = get_input()
-    with open("Search_MMS-UE-S1AP-DI.log", "w") as log_ob:
-        print("Starting to search MMS-UE-#-DI at {} directory".format(input_directory), file=log_ob)
+    print("Process has been started, Minimize this terminal. And check the Search_MMS-UE-S1AP-ID.log file, at current directory for details")
+    with open("Search_MMS-UE-S1AP-ID.log", "w") as log_ob:
+        print("Starting to search MMS-UE-#-ID at {} directory".format(input_directory), file=log_ob)
     # search_string = "MME-UE-S1AP-ID"
     # input_directory = r"D:\D_drive_BACKUP\MENTOR\Utility\Search_a_string\New folder"
     filename_v_uplink_and_related_data = count_occurrence_in_dir(search_string, input_directory)
