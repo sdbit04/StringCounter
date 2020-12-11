@@ -6,3 +6,4 @@ dist
 __pycache__/
 *.xlsx
 che.py
+out_file.txt
