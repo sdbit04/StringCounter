@@ -25,9 +25,9 @@ def count_occurrences_of_string(input_file_path):
         # if _in_str_pat.match(line) is not None:
         if line_match is not None:
             uplink_id = line_match.group(0).strip()
-            with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
-                print("{}-{}".format(ind, line_match.group(0)), file=log_ob)
-                message_sequence_no = None; utran_trace_id = None; enodeb_id = None; date_time = None; cell_id = None; message_type = None
+            # with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
+            #     print("{}-{}".format(ind, line_match.group(0)), file=log_ob)
+            message_sequence_no = None; utran_trace_id = None; enodeb_id = None; date_time = None; cell_id = None; message_type = None
             for back_ind in range(ind, ind-200, -1):
                 back_line = lines[back_ind]
                 if add_message_type.search(back_line):
@@ -125,26 +125,22 @@ def get_input():
 
 
 if __name__ == "__main__":
-    # input_directory = r"D:\D_drive_BACKUP\MENTOR\Utility\Search_a_string\841104_OUT"
-    # search_string = "MME-UE-S1AP-ID"
-    # input_file = r"D:\D_drive_BACKUP\MENTOR\Utility\Search_a_string\840426_OUT\EmilGeoDump_200914T120001_200914T121459_840426.bin.gz_decoded_0.txt"
-    # from argparse import ArgumentParser
-    # parser = ArgumentParser(description="Please provide the Search-String and then search_directory_path")
-    # parser.add_argument("search_string", help="Please provide string you are searching for")
-    # parser.add_argument("input_dir", help="Please provide search_directory")
-    # arguments = parser.parse_args()
-    # search_string = arguments.search_string
-    # input_directory = arguments.input_dir
-    # print("Searching for " + search_string)
 
     search_string_out, input_directory = get_input()
     print("Process has been started, Minimize this terminal. And check the Search_MMS-UE-S1AP-ID.log file, at current directory for details")
     with open("Search_MMS-UE-S1AP-ID.log", "w") as log_ob:
         print("Starting to search MMS-UE-#-ID at {} directory".format(input_directory), file=log_ob)
-    # search_string = "MME-UE-S1AP-ID"
-    # input_directory = r"D:\D_drive_BACKUP\MENTOR\Utility\Search_a_string\New folder"
     filename_v_uplink_and_related_data = count_occurrence_in_dir(input_directory)
-    # print("filename_v_uplink_and_related_data = {}".format(filename_v_uplink_and_related_data))
-    write_to_excel(filename_v_uplink_and_related_data)
+    with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
+        print("Searching and data preparation is complete, writing to output file", file=log_ob)
+    # write_to_excel(filename_v_uplink_and_related_data)
 
+    try:
+        write_to_excel(filename_v_uplink_and_related_data)
+    except:
+        with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
+            print("Error while writing to .xlsx output file", file=log_ob)
+    else:
+        with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
+            print("Process complete successfully!", file=log_ob)
 
