@@ -9,6 +9,18 @@ mMEC = convert it to decimal
 S1AP_Initial_UE_message 
 """
 
+def hex2dec(hex_number):
+    hexnumber=hex_number
+    hex_dict = {"a":10, "b": 11, "c":12, "d":13, "e":14, "f":15 }
+    hex_len = len(hexnumber)
+    dec = 0
+    for ind, c in enumerate(hexnumber, 1):
+        if c not in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+            c = hex_dict[c]
+        dec = dec + int(c) * 16 ** (hex_len - ind)
+    return dec
+
+
 def count_occurrences_of_string(input_file_path):
     _in_str = "^\s*(value)?\s*[(]*[m,M]ME[-_]UE[-_]S1AP[-_]ID[)]*\s*=\s*\d*"
     _line_mMEC = "mMEC\s+=\s*([0-9a-zA-Z]+)"
@@ -62,6 +74,7 @@ def count_occurrences_of_string(input_file_path):
             # print("Search object {}".format(_line_mMEC_match))
             # print(_line_mMEC_match.group(0))
             mMEC_value = _line_mMEC_match.group(1)
+            mMEC_value_dec = hex2dec(mMEC_value)
             mMEC_utran_trace_id = None
             mMEC_message_type = None
             for back_ind in range(ind, ind - 200, -1):
@@ -71,7 +84,7 @@ def count_occurrences_of_string(input_file_path):
                 elif add_utran_trace_id.search(back_line):
                     mMEC_utran_trace_id = back_line.split(":", maxsplit=1)[1].strip()
                     break
-            utran_trace_id_v_mMEC[mMEC_utran_trace_id]=[mMEC_value, mMEC_message_type]
+            utran_trace_id_v_mMEC[mMEC_utran_trace_id]=[mMEC_value_dec, mMEC_message_type]
     print(utran_trace_id_v_mMEC)
     for sec_number, message_data in uplink_id_v_data.items():
         utran_trace_id = message_data[1]
@@ -102,6 +115,7 @@ def count_occurrence_in_dir(input_dir_path):
                 with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
                     print("\t No match in {} found in this file".format(input_file), file=log_ob)
     else:
+        # {file1 : {sec_number : [uplink_id, utran_trace_id, enodeb_id, date_time, cell_id, message_type,mMEC_value, mMEC_message_type], }, file2:{}}
         return filename_v_uplink
 # Got this file_v_uplink dict uptodate 10-Dec
 
