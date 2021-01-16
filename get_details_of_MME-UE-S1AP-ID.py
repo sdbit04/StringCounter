@@ -3,11 +3,7 @@ import os
 import re
 from openpyxl import Workbook
 from tkinter import Tk, Entry, Button, Label, messagebox
-
-"""
-mMEC = convert it to decimal 
-S1AP_Initial_UE_message 
-"""
+# import pdb
 
 def hex2dec(hex_number):
     hexnumber=hex_number
@@ -15,7 +11,8 @@ def hex2dec(hex_number):
     hex_len = len(hexnumber)
     dec = 0
     for ind, c in enumerate(hexnumber, 1):
-        if c not in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+        # pdb.set_trace()
+        if c not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
             c = hex_dict[c]
         dec = dec + int(c) * 16 ** (hex_len - ind)
     return dec
@@ -72,7 +69,7 @@ def count_occurrences_of_string(input_file_path):
         elif _line_mMEC_pat.search(line) is not None:
             _line_mMEC_match = _line_mMEC_pat.search(line)
             # print("Search object {}".format(_line_mMEC_match))
-            # print(_line_mMEC_match.group(0))
+            # print("mMEC= {}".format(_line_mMEC_match.group(0)))
             mMEC_value = _line_mMEC_match.group(1)
             mMEC_value_dec = hex2dec(mMEC_value)
             mMEC_utran_trace_id = None
@@ -85,11 +82,11 @@ def count_occurrences_of_string(input_file_path):
                     mMEC_utran_trace_id = back_line.split(":", maxsplit=1)[1].strip()
                     break
             utran_trace_id_v_mMEC[mMEC_utran_trace_id]=[mMEC_value_dec, mMEC_message_type]
-    print(utran_trace_id_v_mMEC)
+    # print(utran_trace_id_v_mMEC)
     for sec_number, message_data in uplink_id_v_data.items():
         utran_trace_id = message_data[1]
         related_mMEC_data = utran_trace_id_v_mMEC.get(utran_trace_id)
-        print("message_data = {}".format(message_data))
+        # print("message_data = {}".format(message_data))
         if related_mMEC_data is not None:
             message_data.extend(related_mMEC_data)
         message_seq_no_v_data_with_mMEC[sec_number] = message_data
@@ -183,7 +180,6 @@ if __name__ == "__main__":
     with open("Search_MMS-UE-S1AP-ID.log", "a") as log_ob:
         print("Searching and data preparation is complete, writing to output file", file=log_ob)
     # write_to_excel(filename_v_uplink_and_related_data)
-
     try:
         write_to_excel(filename_v_uplink_and_related_data)
     except:

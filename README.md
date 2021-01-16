@@ -8,6 +8,8 @@
 
 **Functionality:**
     This will search for the "MME-UE-S1AP-ID" into all the files one after another, print the 
-    count of occurrences of "MME-UE-S1AP-ID" in each file.
-    Finally print the Total-occurrences of the "MME-UE-S1AP-ID" in all the files.
- 
+    Get all occurrences of "MME-UE-S1AP-ID" in each file.
+	Finally, populate a excel excel file output having following infrmations:
+	------------------------------------------------------------------------------------------------------------------
+	File_name,	UPLINK_ID,	UTRAN_TRACE_ID,	ENODB_ID,	DATE-TIME,	CELL_ID	MESSAGE_TYPE,	mMEC,	mMEC_MESSAGE_TYPE
+	------------------------------------------------------------------------------------------------------------------
